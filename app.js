@@ -3,8 +3,7 @@ const passport = require("passport");
 
 //Routes
 const authRoutes = require("./routers/auth").router;
-
-require("./auth")(passport);
+const teamsRoutes = require("./routers/teams").router;
 
 
 const app = express();
@@ -19,22 +18,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRoutes);
-
-app.post("/team/pokemons", (req, res) => {
-    res.status(200).send("Hello World!");
-});
-
-app.get("/team", passport.authenticate("jwt", {session: false}), (req, res) => {
-    res.status(200).send("Hello World!");
-});
-
-app.delete("/team/pokemons/:pokeid", (req, res) => {
-    res.status(200).send("Hello World!");
-});
-
-app.put("/team", (req, res) => {
-    res.status(200).send("Hello World!");
-});
+app.use("/teams", teamsRoutes);
 
 app.listen(port, (req, res) => {
     console.log("Server started at port 3000");
