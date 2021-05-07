@@ -1,44 +1,24 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const passport = require("passport");
-const jwt = require("jsonwebtoken");
 
-const usersController = require("./controllers/users");
-const bodyParser = require("body-parser");
-usersController.registerUser("pepeju95", "1234");
+//Routes
+const authRoutes = require("./routers/auth").router;
 
 require("./auth")(passport);
 
 
 const app = express();
-app.use(bodyParser.json());
+app.use(express.json());
 
 const port = 3000;
 
-// req y res
-// req: es la request (la peticion)
-// res: es la respuesta
 app.get("/", (req, res) => {
-    console.log(req);
-    res.send("Hello World!");
+    //req es la request (peticion)
+    //res es la respuesta
+    res.status(200).send("Hello World!");
 });
 
-app.post("/login", (req, res) => {
-    // Comprobamos credenciales
-    usersController.checkUserCredentials(req.body.user, req.body.password, (err, result) => {
-        // Si no son validas, error
-        if (!result) {
-            return res.status(401).json({message: "Invalid credentials."});
-        }
-    })
-    
-    // Si son validas, generamos un JWT y lo devolvemos
-    const token = jwt.sign({userId: req.body.user});
-
-    res.status(200).json(
-        {token: token}
-    )
-});
+app.use("/auth", authRoutes);
 
 app.post("/team/pokemons", (req, res) => {
     res.status(200).send("Hello World!");

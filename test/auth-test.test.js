@@ -16,6 +16,16 @@ describe("Suite de pruebas auth", () => {
             });
     });
 
+    it("should return 400 when no data is provided", (done) => {
+        chai.request(app)
+            .post("/login")
+            .end((err, res) => {
+                //Expected valid login
+                chai.assert.equal(res.statusCode, 400);
+                done();
+            });
+    });
+
     it("should return 200 and token for succesful login", (done) => {
         chai.request(app)
             .post("/login")
@@ -23,7 +33,7 @@ describe("Suite de pruebas auth", () => {
             .send({user: "pepeju95", password: "1234"})
             .end((err, res) => {
                 //Expect valid login
-                chai.assert.equal(ers.statusCode, 200);
+                chai.assert.equal(res.statusCode, 200);
                 done();
             });
     });
@@ -41,7 +51,7 @@ describe("Suite de pruebas auth", () => {
                     .get("/team")
                     .set("Authorization", `JWT ${res.body.token}`)
                     .end((err, res) => {
-                        chai.assert.equal(statusCode, 200)
+                        chai.assert.equal(res.statusCode, 200)
                         done();
                     });
             });
