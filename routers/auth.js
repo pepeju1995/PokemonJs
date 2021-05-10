@@ -4,8 +4,7 @@ const jwt = require("jsonwebtoken");
 
 //Controllers
 const usersController = require("../controllers/users");
-usersController.registerUser("pepeju95", "1234");
-usersController.registerUser("pepeju1995", "4321");
+
 
 router.route("/")
     .get((req, res) => {
