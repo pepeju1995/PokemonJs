@@ -1,16 +1,16 @@
 const express = require("express");
-const passport = require("passport");
+const middlewares = require("./middlewares");
 
 //Routes
-const authRoutes = require("./routers/auth").router;
-const teamsRoutes = require("./routers/teams").router;
+const authRoutes = require("./auth/auth.router").router;
+const teamsRoutes = require("./teams/teams.router").router;
 
 
 const app = express();
-app.use(express.json());
 
 const port = 3000;
 
+middlewares.setupMiddlewares(app);
 app.get("/", (req, res) => {
     //req es la request (peticion)
     //res es la respuesta
