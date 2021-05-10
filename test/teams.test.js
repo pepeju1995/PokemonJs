@@ -40,4 +40,36 @@ describe("Suite de pruebas teams", () => {
             });
     });
 
+    it("should return the pokedex number", (done) => {
+        let pokemonName = "Bulbasaur";
+        chai.request(app)
+            .post("/auth/login")
+            .set("content-type", "application/json")
+            .send({user: "pepeju1995", password: "4321"})
+            .end((err, res) => {
+                let token = res.body.token;
+                chai.assert.equal(res.statusCode, 200);
+                chai.request(app)
+                    .post("/teams/pokemons")
+                    .send({name: pokemonName})
+                    .set("Authorization", `JWT ${token}`)
+                    .end((err, res) => {
+                        chai.request(app)
+                            .get("/teams")
+                            .set("Authorization", `JWT ${token}`)
+                            .end((err, res) => {
+                                // tiene equipo con Charizard y Blastoise
+                                // { trainer: "pepeju95", team: [Pokemon]}
+                                chai.assert.equal(res.statusCode, 200);
+                                chai.assert.equal(res.body.trainer, "pepeju1995");
+                                chai.assert.equal(res.body.team.length, 1);
+                                chai.assert.equal(res.body.team[0].name, pokemonName);
+                                chai.assert.equal(res.body.team[0].pokedexNumber, 1);
+                                done();
+                            });
+                        
+                    });
+            });
+    });
+
 });
