@@ -11,12 +11,11 @@ before((done) => {
     usersController.registerUser("pepeju95", "1234");
     usersController.registerUser("pepeju1995", "4321");
     done();
-});
+})
 
-afterEach((done) => {
-    teamsController.cleanUpTeam();
-    done();
-});
+afterEach(async () => {
+    await teamsController.cleanUpTeam();
+})
 
 describe("Suite de pruebas teams", () => {
     it("should return the team of the given user", (done) => {
@@ -121,7 +120,41 @@ describe("Suite de pruebas teams", () => {
             });
     });
 
-});
+    it("should not be able to add pokemon if you already have 6", (done) => {
+        let team = [
+            {name: "Charizard"}, 
+            {name: "Blastoise"}, 
+            {name: "Pikachu"},
+            {name: "Squirtle"}, 
+            {name: "Caterpie"}, 
+            {name: "Pidgey"}
+        ];
+        chai.request(app)
+            .post("/auth/login")
+            .set("content-type", "application/json")
+            .send({user: "pepeju95", password: "1234"})
+            .end((err, res) => {
+                let token = res.body.token;
+                chai.assert.equal(res.statusCode, 200);
+                chai.request(app)
+                    .put("/teams")
+                    .send({team: team})
+                    .set("Authorization", `JWT ${token}`)
+                    .end((err, res) => {
+                        chai.request(app)
+                            .post("/teams/pokemons")
+                            .send({name: "Vibrava"})
+                            .set("Authorization", `JWT ${token}`)
+                            .end((err, res) => {
+                                chai.assert.equal(res.statusCode, 400);
+                                done();
+                            });
+                    
+                    });
+            });
+
+    });
+})
 
 after((done) => {
     usersController.cleanUpUsers();
