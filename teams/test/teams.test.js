@@ -7,10 +7,9 @@ const usersController = require("../../auth/users.controller");
 const teamsController = require("../teams.controller");
 const app = require("../../app").app;
 
-before((done) => {
-    usersController.registerUser("pepeju95", "1234");
-    usersController.registerUser("pepeju1995", "4321");
-    done();
+before(async () => {
+    await usersController.registerUser("pepeju95", "1234");
+    await usersController.registerUser("pepeju1995", "4321");
 })
 
 afterEach(async () => {
@@ -156,7 +155,6 @@ describe("Suite de pruebas teams", () => {
     });
 })
 
-after((done) => {
-    usersController.cleanUpUsers();
-    done();
+after( async () => {
+    await usersController.cleanUpUsers();
 });
